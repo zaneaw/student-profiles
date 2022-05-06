@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { FaPlus, FaMinus } from "react-icons/fa"
 
 export default function Cards({ students, query, tabs, setTabs }) {
     return (
@@ -31,19 +32,21 @@ export default function Cards({ students, query, tabs, setTabs }) {
                             <div className="absolute right-6 top-6">
                                 {/* onClick add this tab to the tabs array */}
                                 <button
-                                    className={active ? "hidden" : "block"}
+                                    className={`${active ? "hidden" : "block"}`}
                                     onClick={() => setTabs([...tabs, i])}
                                 >
-                                    X
+                                    <FaPlus size={25} className="fill-gray-400 hover:fill-black"/>
                                 </button>
                                 {/* onClick hide this tab by filtering out current index from tabs array */}
                                 <button
-                                    className={!active ? "hidden" : "block"}
+                                    className={`${
+                                        !active ? "hidden" : "block"
+                                    }`}
                                     onClick={() =>
                                         setTabs(tabs.filter((tab) => tab !== i))
                                     }
                                 >
-                                    -
+                                    <FaMinus size={25} className="fill-gray-400 hover:fill-black" />
                                 </button>
                             </div>
 
@@ -68,6 +71,7 @@ export default function Cards({ students, query, tabs, setTabs }) {
                                     <p>Skill: {student.skill}</p>
                                     <p>Average: {gradeAvg}%</p>
                                 </div>
+
                                 {/* Display only if active -> active = 'i' in tabs array */}
                                 {active && (
                                     <div
