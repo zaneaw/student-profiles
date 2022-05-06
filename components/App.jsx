@@ -4,7 +4,8 @@ import { useEffect, useState } from "react"
 
 export default function App() {
     const [students, setStudents] = useState("")
-    const [searchName, setSearchName] = useState("")
+    const [query, setQuery] = useState("")
+    const [tabs, setTabs] = useState([])
 
     useEffect(() => {
         axios.get("/api/students").then((res) => {
@@ -12,36 +13,63 @@ export default function App() {
         })
     }, [])
 
-    console.log(searchName)
+    console.log(tabs)
 
     return (
-        <div className="relative max-h-[90vh] overflow-y-scroll rounded-tl-xl rounded-bl-xl border sm:max-h-[85vh] sm:overflow-y-scroll md:max-h-[80vh]">
+        <div className="relative h-full w-full rounded-tl-xl rounded-bl-xl border sm:h-[80vh] sm:max-w-[80vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
             <div className="z-2 sticky top-0 left-0 right-0 z-50 self-center bg-white px-4">
                 <input
                     type="search"
                     placeholder="Search by name"
-                    onChange={(event) => setSearchName(event.target.value)}
-                    value={!searchName ? "" : searchName }
+                    onChange={(event) => setQuery(event.target.value)}
+                    value={!query ? "" : query}
                     className="z-50 max-h-[50px] min-h-[50px] min-w-full border-b-2 bg-white px-2 pt-1 text-lg outline-0 focus-visible:border-black"
                 />
             </div>
-            <div className="max-h-full mt-5">
+            <div className="max-h-full">
                 {students !== "" &&
                     students.map((student, i) => {
                         const src = student.pic
                         const name = student.firstName + " " + student.lastName
-                        // convert incoming array of strings to array of numbers
-                        const numbers = student.grades.map((num) => Number(num))
-                        // reducer function to total up the numbers and divide by length of array to obtain average
+                        const nameLower = name.toLowerCase()
+                        // convert incoming array of strings to array of grades
+                        const grades = student.grades.map((num) => Number(num))
+                        // reducer function to total up the grades and divide by length of array to obtain average
                         const gradeAvg =
-                            numbers.reduce((a, b) => a + b, 0) / numbers.length
+                            grades.reduce((a, b) => a + b, 0) / grades.length
+                        // returns true if the '+' has been clicked
+                        const active = tabs.includes(i)
 
                         return (
                             <div
                                 key={student.id}
-                                className="flex max-w-[100vw] flex-col gap-2 border-b p-5 sm:min-w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:min-w-[65vw]"
+                                className={`relative flex max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw] 
+                                    ${
+                                        query !== "" &&
+                                        (nameLower.includes(query.toLowerCase())
+                                            ? "block"
+                                            : "hidden")
+                                    }`}
                             >
-                                <div className="z-1 min-w-[80px] max-w-[125px] flex-1 self-center overflow-hidden rounded-full border">
+                                <button
+                                    className={`absolute right-6 top-6 ${
+                                        active ? "hidden" : "block"
+                                    }`}
+                                    onClick={() => setTabs([...tabs, i])}
+                                >
+                                    X
+                                </button>
+                                <button
+                                    className={`absolute right-6 top-6 ${
+                                        !active ? "hidden" : "block"
+                                    }`}
+                                    onClick={() =>
+                                        setTabs(tabs.filter((tab) => tab !== i))
+                                    }
+                                >
+                                    -
+                                </button>
+                                <div className="relative min-w-[100px] max-w-[125px] self-center overflow-hidden rounded-full border sm:absolute sm:top-7">
                                     <Image
                                         loader={() => src}
                                         unoptimized
@@ -50,19 +78,38 @@ export default function App() {
                                         width={50}
                                         height={50}
                                         layout="responsive"
-                                        className="z-1"
                                     />
                                 </div>
-                                <div>
-                                    <h1 className="text-xl font-bold sm:text-2xl md:text-4xl">
+                                <div className="sm:ml-32 md:ml-40">
+                                    <h1 className="text-lg font-bold sm:text-2xl md:text-4xl">
                                         {name.toUpperCase()}
                                     </h1>
-                                    <div className="ml-3  sm:ml-4 md:ml-5">
+                                    <div className="ml-1 text-sm sm:ml-3 md:ml-5">
                                         <p>Email: {student.email}</p>
                                         <p>Company: {student.company}</p>
                                         <p>Skill: {student.skill}</p>
                                         <p>Average: {gradeAvg}%</p>
                                     </div>
+                                    {active && (
+                                        <div
+                                            className={`mt-4 ml-1 text-sm sm:ml-3 md:ml-5 ${
+                                                tabs.includes(i)
+                                                    ? "block"
+                                                    : "hidden"
+                                            }`}
+                                        >
+                                            {grades.map((grade, i) => {
+                                                return (
+                                                    <p key={i}>
+                                                        <span className="mr-10">
+                                                            Test {i + 1}:
+                                                        </span>{" "}
+                                                        <span>{grade}%</span>
+                                                    </p>
+                                                )
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )
