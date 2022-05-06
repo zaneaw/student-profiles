@@ -1,5 +1,8 @@
 # Next.js + Tailwind CSS Example
 
+# [Link to Project Notes](https://storage.googleapis.com/hatchways-app.appspot.com/assessments/data/instructions/f-3/Front-end%20Assessment%20-%20Student%20Profiles-TLXROZXQZRK8IRJ2IUPT.pdf)
+
+
 This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
 
 ## Deploy your own
