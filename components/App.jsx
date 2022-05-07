@@ -18,6 +18,11 @@ export default function App() {
                 return res.data.students.map((student, i) => {
                     student["tagInput"] = ""
                     student["tags"] = []
+                    //for testing
+                    if (i === 0) {
+                        student["tagInput"] = ""
+                        student["tags"] = ["test1", "Test2"]
+                    }
                     return student
                 })
             })
@@ -28,12 +33,16 @@ export default function App() {
         const value = event.target.value
         const clonedStudents = [...students]
         const currentStudent = clonedStudents[itemId]
+        // ======+++++++====== left off working HERE ======+++++++======
+        // working on adding an if statement for removing a tag
+        // ======+++++++====== left off working HERE ======+++++++======
+        console.log(event.target)
         // handle change when typing in the input field
         if (event.key !== "Enter") {
             currentStudent.tagInput = value
             setStudents(clonedStudents)
-            // case-insensitive check if tag trying to be added exists, if it does simply 
-            // reset tagInput to an empty field. Else -> 
+            // case-insensitive check if tag trying to be added exists, if it does simply
+            // reset tagInput to an empty field. Else ->
             // add current value of tagInput to state and reset tagInput to empty field
         } else {
             if (currentStudent.tags.includes(value) === true) {
@@ -157,11 +166,14 @@ export default function App() {
                                     )}
                                     {student.tags && (
                                         <div className="mt-2 mb-3 flex gap-2">
-                                            {student.tags.map((tag) => {
+                                            {student.tags.map((tag, i) => {
                                                 return (
                                                     <span
                                                         key={tag}
-                                                        className="rounded bg-gray-300 py-2 px-3 text-sm sm:text-base"
+                                                        className="rounded bg-gray-300 py-2 px-3 text-sm hover:bg-red-500 sm:text-base"
+                                                        onClick={(e) =>
+                                                            handleChange(e, i)
+                                                        }
                                                     >
                                                         {tag}
                                                     </span>
