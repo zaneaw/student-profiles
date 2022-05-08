@@ -29,18 +29,24 @@ export default function App() {
         })
     }, [])
 
-    const handleChange = (event, itemId) => {
+    const handleChange = (event, itemId, tagId) => {
         const value = event.target.value
         const clonedStudents = [...students]
         const currentStudent = clonedStudents[itemId]
-        // ======+++++++====== left off working HERE ======+++++++======
-        // working on adding an if statement for removing a tag
-        // ======+++++++====== left off working HERE ======+++++++======
-        console.log(event.target)
+
+        // onClick event handler for removing a tag
+        // if it's a click event, splice the currentStudent (based on itemId)
+        // and remove 1 item at the index of 'tagId', return clonedStudents
+        // with the new array for the currentStudent
+        if (event.type === 'click') {
+            currentStudent.tags.splice(tagId, 1)
+            return setStudents(clonedStudents)
+        }
+
         // handle change when typing in the input field
         if (event.key !== "Enter") {
             currentStudent.tagInput = value
-            setStudents(clonedStudents)
+            return setStudents(clonedStudents)
             // case-insensitive check if tag trying to be added exists, if it does simply
             // reset tagInput to an empty field. Else ->
             // add current value of tagInput to state and reset tagInput to empty field
@@ -83,10 +89,10 @@ export default function App() {
                                 key={student.id}
                                 className={`relative flex min-w-full max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw] 
                                     ${
-                                        query !== "" &&
-                                        (nameLower.includes(query.toLowerCase())
-                                            ? "block"
-                                            : "hidden")
+                                    query !== "" &&
+                                    (nameLower.includes(query.toLowerCase())
+                                        ? "block"
+                                        : "hidden")
                                     }`}
                             >
                                 {/* Button displays based on state of the tab */}
@@ -95,7 +101,7 @@ export default function App() {
                                     <button
                                         className={`${
                                             active ? "hidden" : "block"
-                                        }`}
+                                            }`}
                                         onClick={() => setTabs([...tabs, i])}
                                     >
                                         <FaPlus
@@ -107,7 +113,7 @@ export default function App() {
                                     <button
                                         className={`${
                                             !active ? "hidden" : "block"
-                                        }`}
+                                            }`}
                                         onClick={() =>
                                             setTabs(
                                                 tabs.filter((tab) => tab !== i)
@@ -150,7 +156,7 @@ export default function App() {
                                                 tabs.includes(i)
                                                     ? "block"
                                                     : "hidden"
-                                            }`}
+                                                }`}
                                         >
                                             {grades.map((grade, i) => {
                                                 return (
@@ -166,13 +172,13 @@ export default function App() {
                                     )}
                                     {student.tags && (
                                         <div className="mt-2 mb-3 flex gap-2">
-                                            {student.tags.map((tag, i) => {
+                                            {student.tags.map((tag, tagId) => {
                                                 return (
                                                     <span
                                                         key={tag}
                                                         className="rounded bg-gray-300 py-2 px-3 text-sm hover:bg-red-500 sm:text-base"
                                                         onClick={(e) =>
-                                                            handleChange(e, i)
+                                                            handleChange(e, i, tagId)
                                                         }
                                                     >
                                                         {tag}
