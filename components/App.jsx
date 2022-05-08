@@ -6,7 +6,8 @@ import Search from "./Search"
 
 export default function App() {
     const [students, setStudents] = useState("")
-    const [query, setQuery] = useState("")
+    const [nameQuery, setNameQuery] = useState("")
+    const [tagQuery, setTagQuery] = useState("")
     const [tabs, setTabs] = useState([])
 
     // get student data from api (hides key if one is used)
@@ -64,7 +65,7 @@ export default function App() {
 
     return (
         <div className="relative h-full w-full rounded-tl-xl rounded-bl-xl border sm:h-[80vh] sm:max-w-[80vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
-            <Search query={query} setQuery={setQuery} />
+            <Search nameQuery={nameQuery} setNameQuery={setNameQuery} tagQuery={tagQuery} setTagQuery={setTagQuery} />
             <div className="max-h-full">
                 {students !== "" &&
                     students.map((student, i) => {
@@ -72,7 +73,7 @@ export default function App() {
                         const active = tabs.includes(i)
                         const src = student.pic
                         const name = student.firstName + " " + student.lastName
-                        // for query testing
+                        // for nameQuery testing
                         const nameLower = name.toLowerCase()
 
                         // convert incoming array of strings to array of grades
@@ -87,12 +88,22 @@ export default function App() {
                         return (
                             <div
                                 key={student.id}
-                                className={`relative flex min-w-full max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw] 
+                                // render logic for searching by name
+                                className={`relative flex min-w-full max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw]
                                     ${
-                                    query !== "" &&
-                                    (nameLower.includes(query.toLowerCase())
-                                        ? "block"
-                                        : "hidden")
+                                    // check if any search is being done
+                                    (nameQuery !== "" && tagQuery !== "") && (
+                                        // if nameQuery is searching and tagQuery is still empty
+                                        ((nameQuery !== "" && tagQuery === "") && (nameLower.includes(nameQuery.toLowerCase()) ? "block" : "hidden"))
+                                        // if tagQuery is searching and nameQuery is still empty
+                                        ((tagQuery !== "" && nameQuery === "") && (tags.includes(tagQuery) ? "block" : "hidden"))
+                                        // if both tag and name query are being searched
+                                        ((tagQuery !== "" && nameQuery !== "") && (tags.includes(tagQuery) && nameLower.includes(nameQuery.toLowerCase())) ? "block" : "hidden"))
+
+
+                                    // (nameLower.includes(nameQuery.toLowerCase()) && tags.includes(tagQuery))
+                                    //     ? "block"
+                                    //     : "hidden"
                                     }`}
                             >
                                 {/* Button displays based on state of the tab */}
