@@ -30,6 +30,60 @@ export default function App() {
         })
     }, [])
 
+    // case-insensitive search for students name
+    const nameSearch = (nameLower, nameQuery) => {
+        if (nameLower.includes(nameQuery.toLowerCase())) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    // case-insensitive search for students tags
+    const tagSearch = (tags, tagQuery) => {
+        const tagMatch = false
+        tags.map((tag) => {
+            tag = tag.toLowerCase()
+            if (tag.includes(tagQuery.toLowerCase())) {
+                return (tagMatch = true)
+            }
+        })
+        if (tagMatch) return true
+        else return false
+    }
+
+    const searchQuery = (nameQuery, tagQuery, nameLower, tags) => {
+        /* 
+            logic for both name and tag being searched.
+            Conditional check on both the tagSearch and the nameSearch,
+            if both return true, the students card's container is set to 'display: block'.
+            If either return false, the container is set to 'hidden' and not displayed.
+        */
+        if (nameQuery !== "" && tagQuery !== "") {
+            if (tagSearch(tags, tagQuery) && nameSearch(nameLower, nameQuery)) {
+                return "block"
+            } else {
+                return "hidden"
+            }
+            // logic for only tag being searched
+            // same logic described above, but only for tag
+        } else if (nameQuery === "" && tagQuery !== "") {
+            if (tagSearch(tags, tagQuery)) {
+                return "block"
+            } else {
+                return "hidden"
+            }
+            // logic for only name being searched
+            // same logic described above, but only for name
+        } else if (nameQuery !== "" && tagQuery === "") {
+            if (nameSearch(nameLower, nameQuery)) {
+                return "block"
+            } else {
+                return "hidden"
+            }
+        }
+    }
+
     const handleChange = (event, itemId, tagId) => {
         const value = event.target.value
         const clonedStudents = [...students]
@@ -39,7 +93,7 @@ export default function App() {
         // if it's a click event, splice the currentStudent (based on itemId)
         // and remove 1 item at the index of 'tagId', return clonedStudents
         // with the new array for the currentStudent
-        if (event.type === 'click') {
+        if (event.type === "click") {
             currentStudent.tags.splice(tagId, 1)
             return setStudents(clonedStudents)
         }
@@ -48,11 +102,14 @@ export default function App() {
         if (event.key !== "Enter") {
             currentStudent.tagInput = value
             return setStudents(clonedStudents)
-            // case-insensitive check if tag trying to be added exists, if it does simply
+            
+            // in case the user just hits enter on an empty tag input field
+            // if they do, nothing happens :)
+        } else if (value.length > 0) {
+            // case-insensitive check if tag trying to be added exists, if it does ->
             // reset tagInput to an empty field. Else ->
             // add current value of tagInput to state and reset tagInput to empty field
-        } else {
-            if (currentStudent.tags.includes(value) === true) {
+            if (currentStudent.tags.includes(value)) {
                 currentStudent.tagInput = ""
                 return setStudents(clonedStudents)
             } else {
@@ -65,7 +122,12 @@ export default function App() {
 
     return (
         <div className="relative h-full w-full rounded-tl-xl rounded-bl-xl border sm:h-[80vh] sm:max-w-[80vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
-            <Search nameQuery={nameQuery} setNameQuery={setNameQuery} tagQuery={tagQuery} setTagQuery={setTagQuery} />
+            <Search
+                nameQuery={nameQuery}
+                setNameQuery={setNameQuery}
+                tagQuery={tagQuery}
+                setTagQuery={setTagQuery}
+            />
             <div className="max-h-full">
                 {students !== "" &&
                     students.map((student, i) => {
@@ -88,23 +150,15 @@ export default function App() {
                         return (
                             <div
                                 key={student.id}
-                                // render logic for searching by name
+                                // render logic for searching by name is a function call. See function at top of file
                                 className={`relative flex min-w-full max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw]
-                                    ${
-                                    // check if any search is being done
-                                    (nameQuery !== "" && tagQuery !== "") && (
-                                        // if nameQuery is searching and tagQuery is still empty
-                                        ((nameQuery !== "" && tagQuery === "") && (nameLower.includes(nameQuery.toLowerCase()) ? "block" : "hidden"))
-                                        // if tagQuery is searching and nameQuery is still empty
-                                        ((tagQuery !== "" && nameQuery === "") && (tags.includes(tagQuery) ? "block" : "hidden"))
-                                        // if both tag and name query are being searched
-                                        ((tagQuery !== "" && nameQuery !== "") && (tags.includes(tagQuery) && nameLower.includes(nameQuery.toLowerCase())) ? "block" : "hidden"))
-
-
-                                    // (nameLower.includes(nameQuery.toLowerCase()) && tags.includes(tagQuery))
-                                    //     ? "block"
-                                    //     : "hidden"
-                                    }`}
+                                     ${searchQuery(
+                                         nameQuery,
+                                         tagQuery,
+                                         nameLower,
+                                         tags
+                                     )}
+                                `}
                             >
                                 {/* Button displays based on state of the tab */}
                                 <div className="absolute right-6 top-6">
@@ -112,7 +166,7 @@ export default function App() {
                                     <button
                                         className={`${
                                             active ? "hidden" : "block"
-                                            }`}
+                                        }`}
                                         onClick={() => setTabs([...tabs, i])}
                                     >
                                         <FaPlus
@@ -124,7 +178,7 @@ export default function App() {
                                     <button
                                         className={`${
                                             !active ? "hidden" : "block"
-                                            }`}
+                                        }`}
                                         onClick={() =>
                                             setTabs(
                                                 tabs.filter((tab) => tab !== i)
@@ -167,7 +221,7 @@ export default function App() {
                                                 tabs.includes(i)
                                                     ? "block"
                                                     : "hidden"
-                                                }`}
+                                            }`}
                                         >
                                             {grades.map((grade, i) => {
                                                 return (
@@ -187,9 +241,13 @@ export default function App() {
                                                 return (
                                                     <span
                                                         key={tag}
-                                                        className="rounded bg-gray-300 py-2 px-3 text-sm hover:bg-red-500 sm:text-base"
+                                                        className="rounded bg-gray-300 py-2 px-3 cursor-pointer text-sm ease-in-out duration-100 hover:scale-110 hover:bg-red-500 sm:text-base"
                                                         onClick={(e) =>
-                                                            handleChange(e, i, tagId)
+                                                            handleChange(
+                                                                e,
+                                                                i,
+                                                                tagId
+                                                            )
                                                         }
                                                     >
                                                         {tag}
