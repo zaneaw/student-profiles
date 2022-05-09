@@ -4,6 +4,7 @@
 
 ## TODO List
 
+* None at the moment
 
 ## Completed
 
@@ -11,4 +12,3 @@
 * Tag search
 * Search for tag and name at the same time!
 * Load container for content before content exists
-
