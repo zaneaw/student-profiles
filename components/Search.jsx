@@ -1,4 +1,3 @@
-import React from 'react'
 
 export default function Search({nameQuery, setNameQuery, tagQuery, setTagQuery}) {
   return (
