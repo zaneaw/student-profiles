@@ -1,9 +1,13 @@
 # Currently working on
 
-App.js Line 36 -> onClick => remove Tag that was clicked on
+* Load container for content before content exists
 
 ## TODO List
 
-* Case-sensitive tag search
 * Organize components
+
+## Completed
+
+* App.js Line 36 -> onClick => remove Tag that was clicked on
+* Tag search
 * Search for tag and name at the same time!

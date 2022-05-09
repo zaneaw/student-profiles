@@ -6,7 +6,8 @@ import Search from "./Search"
 
 export default function App() {
     const [students, setStudents] = useState("")
-    const [query, setQuery] = useState("")
+    const [nameQuery, setNameQuery] = useState("")
+    const [tagQuery, setTagQuery] = useState("")
     const [tabs, setTabs] = useState([])
 
     // get student data from api (hides key if one is used)
@@ -29,23 +30,86 @@ export default function App() {
         })
     }, [])
 
-    const handleChange = (event, itemId) => {
+    // case-insensitive search for students name
+    const nameSearch = (nameLower, nameQuery) => {
+        if (nameLower.includes(nameQuery.toLowerCase())) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    // case-insensitive search for students tags
+    const tagSearch = (tags, tagQuery) => {
+        const tagMatch = false
+        tags.map((tag) => {
+            tag = tag.toLowerCase()
+            if (tag.includes(tagQuery.toLowerCase())) {
+                return (tagMatch = true)
+            }
+        })
+        if (tagMatch) return true
+        else return false
+    }
+
+    const searchQuery = (nameQuery, tagQuery, nameLower, tags) => {
+        /* 
+            logic for both name and tag being searched.
+            Conditional check on both the tagSearch and the nameSearch,
+            if both return true, the students card's container is set to 'display: block'.
+            If either return false, the container is set to 'hidden' and not displayed.
+        */
+        if (nameQuery !== "" && tagQuery !== "") {
+            if (tagSearch(tags, tagQuery) && nameSearch(nameLower, nameQuery)) {
+                return "block"
+            } else {
+                return "hidden"
+            }
+            // logic for only tag being searched
+            // same logic described above, but only for tag
+        } else if (nameQuery === "" && tagQuery !== "") {
+            if (tagSearch(tags, tagQuery)) {
+                return "block"
+            } else {
+                return "hidden"
+            }
+            // logic for only name being searched
+            // same logic described above, but only for name
+        } else if (nameQuery !== "" && tagQuery === "") {
+            if (nameSearch(nameLower, nameQuery)) {
+                return "block"
+            } else {
+                return "hidden"
+            }
+        }
+    }
+
+    const handleChange = (event, itemId, tagId) => {
         const value = event.target.value
         const clonedStudents = [...students]
         const currentStudent = clonedStudents[itemId]
-        // ======+++++++====== left off working HERE ======+++++++======
-        // working on adding an if statement for removing a tag
-        // ======+++++++====== left off working HERE ======+++++++======
-        console.log(event.target)
+
+        // onClick event handler for removing a tag
+        // if it's a click event, splice the currentStudent (based on itemId)
+        // and remove 1 item at the index of 'tagId', return clonedStudents
+        // with the new array for the currentStudent
+        if (event.type === "click") {
+            currentStudent.tags.splice(tagId, 1)
+            return setStudents(clonedStudents)
+        }
+
         // handle change when typing in the input field
         if (event.key !== "Enter") {
             currentStudent.tagInput = value
-            setStudents(clonedStudents)
-            // case-insensitive check if tag trying to be added exists, if it does simply
+            return setStudents(clonedStudents)
+            
+            // in case the user just hits enter on an empty tag input field
+            // if they do, nothing happens :)
+        } else if (value.length > 0) {
+            // case-insensitive check if tag trying to be added exists, if it does ->
             // reset tagInput to an empty field. Else ->
             // add current value of tagInput to state and reset tagInput to empty field
-        } else {
-            if (currentStudent.tags.includes(value) === true) {
+            if (currentStudent.tags.includes(value)) {
                 currentStudent.tagInput = ""
                 return setStudents(clonedStudents)
             } else {
@@ -58,7 +122,12 @@ export default function App() {
 
     return (
         <div className="relative h-full w-full rounded-tl-xl rounded-bl-xl border sm:h-[80vh] sm:max-w-[80vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
-            <Search query={query} setQuery={setQuery} />
+            <Search
+                nameQuery={nameQuery}
+                setNameQuery={setNameQuery}
+                tagQuery={tagQuery}
+                setTagQuery={setTagQuery}
+            />
             <div className="max-h-full">
                 {students !== "" &&
                     students.map((student, i) => {
@@ -66,7 +135,7 @@ export default function App() {
                         const active = tabs.includes(i)
                         const src = student.pic
                         const name = student.firstName + " " + student.lastName
-                        // for query testing
+                        // for nameQuery testing
                         const nameLower = name.toLowerCase()
 
                         // convert incoming array of strings to array of grades
@@ -81,13 +150,15 @@ export default function App() {
                         return (
                             <div
                                 key={student.id}
-                                className={`relative flex min-w-full max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw] 
-                                    ${
-                                        query !== "" &&
-                                        (nameLower.includes(query.toLowerCase())
-                                            ? "block"
-                                            : "hidden")
-                                    }`}
+                                // render logic for searching by name is a function call. See function at top of file
+                                className={`relative flex min-w-full max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw]
+                                     ${searchQuery(
+                                         nameQuery,
+                                         tagQuery,
+                                         nameLower,
+                                         tags
+                                     )}
+                                `}
                             >
                                 {/* Button displays based on state of the tab */}
                                 <div className="absolute right-6 top-6">
@@ -166,13 +237,17 @@ export default function App() {
                                     )}
                                     {student.tags && (
                                         <div className="mt-2 mb-3 flex gap-2">
-                                            {student.tags.map((tag, i) => {
+                                            {student.tags.map((tag, tagId) => {
                                                 return (
                                                     <span
                                                         key={tag}
-                                                        className="rounded bg-gray-300 py-2 px-3 text-sm hover:bg-red-500 sm:text-base"
+                                                        className="rounded bg-gray-300 py-2 px-3 cursor-pointer text-sm ease-in-out duration-100 hover:scale-110 hover:bg-red-500 sm:text-base"
                                                         onClick={(e) =>
-                                                            handleChange(e, i)
+                                                            handleChange(
+                                                                e,
+                                                                i,
+                                                                tagId
+                                                            )
                                                         }
                                                     >
                                                         {tag}
