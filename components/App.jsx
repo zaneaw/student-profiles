@@ -102,7 +102,7 @@ export default function App() {
         if (event.key !== "Enter") {
             currentStudent.tagInput = value
             return setStudents(clonedStudents)
-            
+
             // in case the user just hits enter on an empty tag input field
             // if they do, nothing happens :)
         } else if (value.length > 0) {
@@ -121,7 +121,7 @@ export default function App() {
     }
 
     return (
-        <div className="relative h-full w-full rounded-tl-xl rounded-bl-xl border sm:h-[80vh] sm:max-w-[80vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
+        <div className="relative shadow-lg max-h-[95vh] min-w-full rounded-xl border bg-gray-200 sm:min-h-[80vh] sm:min-w-[90vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
             <Search
                 nameQuery={nameQuery}
                 setNameQuery={setNameQuery}
@@ -151,7 +151,7 @@ export default function App() {
                             <div
                                 key={student.id}
                                 // render logic for searching by name is a function call. See function at top of file
-                                className={`relative flex min-w-full max-w-full flex-col gap-2 border-b p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw]
+                                className={`relative flex min-w-full max-w-full flex-col gap-2 border-b bg-white p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw]
                                      ${searchQuery(
                                          nameQuery,
                                          tagQuery,
@@ -241,7 +241,7 @@ export default function App() {
                                                 return (
                                                     <span
                                                         key={tag}
-                                                        className="rounded bg-gray-300 py-2 px-3 cursor-pointer text-sm ease-in-out duration-100 hover:scale-110 hover:bg-red-500 sm:text-base"
+                                                        className="cursor-pointer rounded bg-gray-300 py-2 px-3 text-sm duration-100 ease-in-out hover:scale-110 hover:bg-red-500 sm:text-base"
                                                         onClick={(e) =>
                                                             handleChange(
                                                                 e,
