@@ -236,7 +236,7 @@ export default function App() {
                                         </div>
                                     )}
                                     {student.tags && (
-                                        <div className="mt-2 mb-3 flex gap-2">
+                                        <div className="mt-2 mb-3 flex flex-wrap gap-2">
                                             {student.tags.map((tag, tagId) => {
                                                 return (
                                                     <span
