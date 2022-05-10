@@ -13,6 +13,7 @@ export default function App() {
     // get student data from api (hides key if one is used)
     // map over each student and add an empty 'tags' array
     // and an empty 'tagIput' field
+    // Only executes on page load/refresh
     useEffect(() => {
         axios.get("/api/students").then((res) => {
             return setStudents(() => {
