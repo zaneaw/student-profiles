@@ -1,5 +1,6 @@
 import Head from "next/head"
 import App from "../components/App"
+import GitHubComponent from "../components/GitHubComponent"
 
 export default function Home() {
     return (
@@ -8,6 +9,7 @@ export default function Home() {
                 <title>Student Profiles</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <GitHubComponent />
             <App />
         </div>
     )
