@@ -2,16 +2,17 @@ import { FaPlus, FaMinus } from "react-icons/fa"
 import Image from "next/image"
 
 export default function Card({
+    i,
     student,
     tabs,
     setTabs,
-    i,
     searchQuery,
     nameQuery,
     tagQuery,
     handleChange,
 }) {
     // returns true if the '+' has been clicked
+    // used for expanding the students display
     const active = tabs.includes(i)
     const src = student.pic
     const name = student.firstName + " " + student.lastName
@@ -26,9 +27,9 @@ export default function Card({
 
     const tagInput = student.tagInput
     const tags = student.tags
+
     return (
         <div
-            key={student.id}
             // render logic for searching by name is a function call. See function at top of file
             className={`relative flex min-w-full max-w-full flex-col gap-2 border-b bg-white p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw]
                                      ${searchQuery(

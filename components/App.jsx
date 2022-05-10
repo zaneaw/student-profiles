@@ -1,6 +1,6 @@
 import axios from "axios"
-import Image from "next/image"
 import { useEffect, useState } from "react"
+import { VscLoading } from "react-icons/vsc"
 import Card from "./Card"
 import Search from "./Search"
 
@@ -19,11 +19,6 @@ export default function App() {
                 return res.data.students.map((student, i) => {
                     student["tagInput"] = ""
                     student["tags"] = []
-                    //for testing
-                    if (i === 0) {
-                        student["tagInput"] = ""
-                        student["tags"] = ["test1", "Test2"]
-                    }
                     return student
                 })
             })
@@ -122,18 +117,19 @@ export default function App() {
     }
 
     return (
-        <div className="relative min-h-full rounded-xl border bg-gray-200 shadow-lg sm:max-h-[80vh] sm:min-h-[80vh] sm:min-w-[90vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
+        <div className="relative min-h-[95vh] rounded-xl border bg-gray-200 shadow-lg sm:max-h-[80vh] sm:min-h-[80vh] sm:min-w-[90vw] sm:overflow-y-scroll md:h-[75vh] md:w-[75vw]">
             <Search
                 nameQuery={nameQuery}
                 setNameQuery={setNameQuery}
                 tagQuery={tagQuery}
                 setTagQuery={setTagQuery}
             />
-            <div className="max-h-full">
-                {students !== "" &&
+            <div className="max-h-full min-h-full">
+                {students !== "" ? (
                     students.map((student, i) => {
                         return (
                             <Card
+                                key={student.id}
                                 student={student}
                                 i={i}
                                 tabs={tabs}
@@ -144,7 +140,18 @@ export default function App() {
                                 setTabs={setTabs}
                             />
                         )
-                    })}
+                    })
+                ) : (
+                    // render this if nothing exists in students
+                    <div className="mx-auto flex flex-col content-center pt-[33%]">
+                        <p className=" text-center text-3xl text-gray-400">
+                            Attempting to load
+                        </p>
+                        <span className="mx-auto mt-4 animate-spin">
+                            <VscLoading className="text-gray-400" size={30} />
+                        </span>
+                    </div>
+                )}
             </div>
         </div>
     )
