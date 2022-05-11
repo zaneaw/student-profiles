@@ -6,7 +6,6 @@ import Search from "./Search"
 export default function App({ students, setStudents }) {
     const [nameQuery, setNameQuery] = useState("")
     const [tagQuery, setTagQuery] = useState("")
-    const [tabs, setTabs] = useState([])
 
     // case-insensitive search for students name
     const nameSearch = (nameLower, nameQuery) => {
@@ -108,12 +107,10 @@ export default function App({ students, setStudents }) {
                                 key={student.id}
                                 student={student}
                                 i={i}
-                                tabs={tabs}
                                 searchQuery={searchQuery}
                                 nameQuery={nameQuery}
                                 tagQuery={tagQuery}
                                 handleChange={handleChange}
-                                setTabs={setTabs}
                             />
                         )
                     })
