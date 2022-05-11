@@ -30,7 +30,6 @@ export default function Card({
 
     return (
         <div
-            // render logic for searching by name is a function call. See function at top of file
             className={`relative flex min-w-full max-w-full flex-col gap-2 border-b bg-white p-5 sm:w-[85vw] sm:flex-row sm:items-center md:gap-8 md:px-10 lg:w-[65vw]
                                      ${searchQuery(
                                          nameQuery,
@@ -40,9 +39,6 @@ export default function Card({
                                      )}
                                 `}
         >
-            {/* 
-                Button displays based on state of the tab 
-            */}
             <div className="absolute right-6 top-6">
                 {/* onClick add this tab to the tabs array */}
                 <button
@@ -65,10 +61,6 @@ export default function Card({
                     />
                 </button>
             </div>
-
-            {/* 
-                Students Image container and Image here 
-            */}
             <div className="relative min-w-[100px] max-w-[125px] self-center overflow-hidden rounded-full border sm:absolute sm:top-7">
                 <Image
                     loader={() => src}
@@ -80,10 +72,6 @@ export default function Card({
                     layout="responsive"
                 />
             </div>
-
-            {/* 
-                Student Information: Name, Email, Tags, etc.
-             */}
             <div className="sm:ml-32 md:ml-40">
                 <h1 className="text-lg font-bold sm:text-xl md:text-2xl lg:text-4xl">
                     {name.toUpperCase()}
@@ -94,11 +82,6 @@ export default function Card({
                     <p>Skill: {student.skill}</p>
                     <p>Average: {gradesAvg}%</p>
                 </div>
-
-                {/* 
-                    Display only if active is true, active is true if 'i' is in tabs array
-                    Student Tests and Grade Percentages are displayed here
-                */}
                 {active && (
                     <div
                         className={`mt-4 ml-1 text-sm sm:ml-3 sm:text-base md:ml-5 ${
@@ -115,10 +98,6 @@ export default function Card({
                         })}
                     </div>
                 )}
-
-                {/* 
-                    Student Tags displayed if they exist for the student, flex wrap if too long
-                */}
                 {student.tags && (
                     <div className="mt-2 mb-3 flex flex-wrap gap-2">
                         {student.tags.map((tag, tagId) => {
@@ -134,10 +113,6 @@ export default function Card({
                         })}
                     </div>
                 )}
-
-                {/* 
-                    Tag input field
-                */}
                 <input
                     className="border-b-2 pb-1 text-sm outline-0 focus-visible:border-black md:text-base"
                     type="text"

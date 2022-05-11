@@ -13,7 +13,6 @@ export default function App() {
     // get student data from api (hides key if one is used)
     // map over each student and add an empty 'tags' array
     // and an empty 'tagIput' field
-    // Only executes on page load/refresh
     useEffect(() => {
         axios.get("/api/students").then((res) => {
             return setStudents(() => {
@@ -51,9 +50,6 @@ export default function App() {
     const searchQuery = (nameQuery, tagQuery, nameLower, tags) => {
         /* 
             logic for both name and tag being searched.
-            Conditional check on both the tagSearch and the nameSearch,
-            if both return true, the students card's container is set to 'display: block'.
-            If either return false, the container is set to 'hidden' and not displayed.
         */
         if (nameQuery !== "" && tagQuery !== "") {
             if (tagSearch(tags, tagQuery) && nameSearch(nameLower, nameQuery)) {
@@ -62,7 +58,6 @@ export default function App() {
                 return "hidden"
             }
             // logic for only tag being searched
-            // same logic described above, but only for tag
         } else if (nameQuery === "" && tagQuery !== "") {
             if (tagSearch(tags, tagQuery)) {
                 return "block"
@@ -70,7 +65,6 @@ export default function App() {
                 return "hidden"
             }
             // logic for only name being searched
-            // same logic described above, but only for name
         } else if (nameQuery !== "" && tagQuery === "") {
             if (nameSearch(nameLower, nameQuery)) {
                 return "block"
