@@ -1,6 +1,6 @@
 import { FaPlus, FaMinus } from "react-icons/fa"
 import Image from "next/image"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 export default function Card({
     i,
@@ -12,18 +12,15 @@ export default function Card({
 }) {
     const [tab, setTab] = useState(false)
 
-    const src = student.pic
     const name = student.firstName + " " + student.lastName
-    // for nameQuery testing == don't delete!
     const nameLower = name.toLowerCase()
 
-    // convert incoming array of strings to array of grades
-    const grades = student.grades.map((num) => Number(num))
-    // reducer function to total up the grades and divide by length of array to obtain average
-    const gradesTotal = grades.reduce((a, b) => a + b, 0)
-    const gradesAvg = gradesTotal / grades.length
+    const grades = student.grades
+    // Memoize expensive function
+    const gradesAvg = useMemo(() => {
+        return grades.reduce((a, b) => Number(a) + Number(b), 0) / grades.length
+    }, [grades])
 
-    const tagInput = student.tagInput
     const tags = student.tags
 
     return (
@@ -61,9 +58,9 @@ export default function Card({
             </div>
             <div className="relative min-w-[100px] max-w-[125px] self-center overflow-hidden rounded-full border sm:absolute sm:top-7">
                 <Image
-                    loader={() => src}
+                    loader={() => student.pic}
                     unoptimized
-                    src={src}
+                    src={student.pic}
                     alt="Students selected image"
                     width={50}
                     height={50}
@@ -115,7 +112,7 @@ export default function Card({
                     className="border-b-2 pb-1 text-sm outline-0 focus-visible:border-black md:text-base"
                     type="text"
                     placeholder="Add a tag"
-                    value={!tagInput ? "" : tagInput}
+                    value={!student.tagInput ? "" : student.tagInput}
                     name="tagInput"
                     onChange={(e) => handleChange(e, i)}
                     onKeyPress={(e) => e.key === "Enter" && handleChange(e, i)}
