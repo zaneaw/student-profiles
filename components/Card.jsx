@@ -1,22 +1,20 @@
 import { FaPlus, FaMinus } from "react-icons/fa"
 import Image from "next/image"
+import { useState } from "react"
 
 export default function Card({
     i,
     student,
-    tabs,
-    setTabs,
     searchQuery,
     nameQuery,
     tagQuery,
     handleChange,
 }) {
-    // returns true if the '+' has been clicked
-    // used for expanding the students display
-    const active = tabs.includes(i)
+    const [tab, setTab] = useState(false)
+
     const src = student.pic
     const name = student.firstName + " " + student.lastName
-    // for nameQuery testing
+    // for nameQuery testing == don't delete!
     const nameLower = name.toLowerCase()
 
     // convert incoming array of strings to array of grades
@@ -42,8 +40,8 @@ export default function Card({
             <div className="absolute right-6 top-6">
                 {/* onClick add this tab to the tabs array */}
                 <button
-                    className={`${active ? "hidden" : "block"}`}
-                    onClick={() => setTabs([...tabs, i])}
+                    className={`${tab ? "hidden" : "block"}`}
+                    onClick={() => setTab((tab) => !tab)}
                 >
                     <FaPlus
                         size={25}
@@ -52,8 +50,8 @@ export default function Card({
                 </button>
                 {/* onClick hide this tab by filtering out current index from tabs array */}
                 <button
-                    className={`${!active ? "hidden" : "block"}`}
-                    onClick={() => setTabs(tabs.filter((tab) => tab !== i))}
+                    className={`${!tab ? "hidden" : "block"}`}
+                    onClick={() => setTab((tab) => !tab)}
                 >
                     <FaMinus
                         size={25}
@@ -82,10 +80,10 @@ export default function Card({
                     <p>Skill: {student.skill}</p>
                     <p>Average: {gradesAvg}%</p>
                 </div>
-                {active && (
+                {tab && (
                     <div
                         className={`mt-4 ml-1 text-sm sm:ml-3 sm:text-base md:ml-5 ${
-                            tabs.includes(i) ? "block" : "hidden"
+                            tab ? "block" : "hidden"
                         }`}
                     >
                         {grades.map((grade, i) => {
