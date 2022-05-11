@@ -1,29 +1,12 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { VscLoading } from "react-icons/vsc"
 import Card from "./Card"
 import Search from "./Search"
 
-export default function App() {
-    const [students, setStudents] = useState("")
+export default function App({ students, setStudents }) {
     const [nameQuery, setNameQuery] = useState("")
     const [tagQuery, setTagQuery] = useState("")
     const [tabs, setTabs] = useState([])
-
-    // get student data from api (hides key if one is used)
-    // map over each student and add an empty 'tags' array
-    // and an empty 'tagIput' field
-    useEffect(() => {
-        axios.get("/api/students").then((res) => {
-            return setStudents(() => {
-                return res.data.students.map((student, i) => {
-                    student["tagInput"] = ""
-                    student["tags"] = []
-                    return student
-                })
-            })
-        })
-    }, [])
 
     // case-insensitive search for students name
     const nameSearch = (nameLower, nameQuery) => {
@@ -48,9 +31,7 @@ export default function App() {
     }
 
     const searchQuery = (nameQuery, tagQuery, nameLower, tags) => {
-        /* 
-            logic for both name and tag being searched.
-        */
+        // logic for both name and tag being searched.
         if (nameQuery !== "" && tagQuery !== "") {
             if (tagSearch(tags, tagQuery) && nameSearch(nameLower, nameQuery)) {
                 return "block"
